@@ -9,16 +9,16 @@ const mongoClientPromise = MongoClient.connect('mongodb://localhost:27017');
 // Create a user
 (async()=>{
     const saltLength = 64; // in bytes
-    const saltRounds = 1024;
+    const hashIterations = 120000;
     const mongoClient = await mongoClientPromise;
     const db = mongoClient.db('authtest');
     const salt = (await randomBytes(saltLength)).toString('hex');
     await db.collection('user').insertOne({
         _id: 'someUserId',
         username: 'user',
-        password: await hash('password', salt, saltRounds),
+        password: await hash('password', salt, hashIterations),
         salt,
-        rounds: saltRounds,
+        rounds: hashIterations,
     });
 })();
 
